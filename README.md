@@ -26,6 +26,9 @@ A smart Git commit automation tool written in C++98 that generates commit messag
 ### Optional:  Add to PATH
 
 ```bash
+# You might need to grant permission to the binary
+chmod +x /path/to/ss_git_push
+
 # Copy to a directory in your PATH
 sudo cp ss_git_push /usr/local/bin/
 
