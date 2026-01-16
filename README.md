@@ -1,4 +1,4 @@
-# ss_git_push
+# SS GitPush
 
 A smart Git commit automation tool written in C++98 that generates commit messages based on special comments in your code.
 
@@ -166,6 +166,8 @@ UPDATED FILE:
 
 This project is open source and available for personal and commercial use.
 
+SS is just a signature and it means Ser Superior (Superior Being) in portuguese. All my projects have it as prefix.
+
 ## 🤝 Contributing
 
 Feel free to fork, modify, and submit pull requests.  Suggestions and improvements are welcome!
@@ -178,10 +180,5 @@ Feel free to fork, modify, and submit pull requests.  Suggestions and improvemen
 - Consider adding multiple `SS_COMMIT` comments for complex changes
 
 ---
-
-## About SS
-
-SS is just a signature and it means Ser Superior (Superior Being) in portuguese. All my projects have it as prefix.
-
 
 **Made using C++98**
