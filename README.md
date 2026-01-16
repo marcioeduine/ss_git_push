@@ -180,3 +180,4 @@ Feel free to fork, modify, and submit pull requests.  Suggestions and improvemen
 ---
 
 **Made using C++98**
+**SS is just a signature and it means Ser Superior (Superior Being) in portuguese. All my projects have it as prefix.**
