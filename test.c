@@ -1,5 +1,5 @@
-// SS_COMMIT: I added the main() function.
+//SS_COMMIT: main() function added.
 int	main(void)
 {
-	return (0); // SS_COMMIT: For now, it's returning 0 (zero).
+	return (0); //SS_COMMIT: Just return zero.
 }
