@@ -4,5 +4,5 @@ void	add(int &a, int &b);
 //SS_COMMIT: main() function added.
 int	main(void)
 {
-	return (0); //SS_COMMIT: Just return 0 (zero).
+	return (0); //SS_COMMIT: Just return zero.
 }
