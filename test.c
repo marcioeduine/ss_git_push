@@ -1,5 +1,5 @@
-// SS_COMMIT: add() function deleted .
+// SS_COMMIT: Fixed bugs.
 int	main(void)
 {
-	return (0);
+	return (0); // SS_COMMIT: Clean code.
 }
