@@ -5,7 +5,7 @@ An intelligent Git commit automation tool written in C++98 that generates commit
 ## 📋 Description
 
 `ss_git_push` is a command-line utility that automates the Git commit process by:
-- Automatically staging all changes (`git add .`)
+- Automatically staging all changes (`git add *`)
 - Scanning modified files for special `SS_COMMIT` comments
 - Generating structured commit messages based on these comments
 - Creating commits with detailed file-by-file change descriptions
@@ -48,7 +48,7 @@ echo 'alias ss_git_push="/path/to/ss_git_push"' >> ~/.bashrc
 ```
 
 This command will:
-1. Execute `git add .` (stage all changes)
+1. Execute `git add *` (stage all changes)
 2. Retrieve the list of staged files
 3. Scan each file for `SS_COMMIT` comments
 4. Generate a structured commit message
@@ -150,7 +150,7 @@ The tool recognises two comment formats:
 
 ## ⚠️ Important Notes
 
-- The tool automatically runs `git add .` (stages all changes)
+- The tool automatically runs `git add *` (stages all changes)
 - If no files are staged, it will output "Nothing to commit!"
 - Files without `SS_COMMIT` comments will still be listed in the commit
 - Commit messages are generated automatically
