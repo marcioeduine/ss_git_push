@@ -5,7 +5,7 @@ Uma ferramenta inteligente de automatização de commits Git escrita em C++98 qu
 ## 📋 Descrição
 
 O `ss_git_push` é um utilitário de linha de comandos que automatiza o processo de commit no Git através de:
-- Preparação automática de todas as alterações (`git add .`)
+- Preparação automática de todas as alterações (`git add *`)
 - Análise de ficheiros modificados à procura de comentários especiais `SS_COMMIT`
 - Geração de mensagens de commit estruturadas baseadas nesses comentários
 - Criação de commits com descrições detalhadas ficheiro a ficheiro
@@ -48,7 +48,7 @@ echo 'alias ss_git_push="/caminho/para/ss_git_push"' >> ~/.bashrc
 ```
 
 Este comando irá:
-1. Executar `git add .` (preparar todas as alterações)
+1. Executar `git add *` (preparar todas as alterações)
 2. Obter a lista de ficheiros preparados
 3. Analisar cada ficheiro à procura de comentários `SS_COMMIT`
 4. Gerar uma mensagem de commit estruturada
@@ -150,7 +150,7 @@ A ferramenta reconhece dois formatos de comentários:
 
 ## ⚠️ Notas Importantes
 
-- A ferramenta executa automaticamente `git add .` (prepara todas as alterações)
+- A ferramenta executa automaticamente `git add *` (prepara todas as alterações)
 - Se nenhum ficheiro estiver preparado, será apresentado "Nothing to commit!"
 - Ficheiros sem comentários `SS_COMMIT` continuarão a ser listados no commit
 - As mensagens de commit são geradas automaticamente
