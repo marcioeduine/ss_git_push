@@ -25,18 +25,59 @@ An intelligent Git commit automation tool written in C++98 that generates commit
 
 ### Prerequisites
 - Git installed and configured
+- C++ compiler with C++98 support (g++, clang++)
+- Make
+
+### Build from Source
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd ss_git_push
+
+# Build the project
+make
+
+# The binary will be created in the current directory
+```
+
+### Makefile Targets
+
+```bash
+make        # Build the project
+make clean  # Remove object files
+make fclean # Remove object files and binary
+make re     # Rebuild the project from scratch
+```
 
 ### Optional: Add to PATH
 
 ```bash
 # You might need to grant permission to the binary
-chmod +x /path/to/ss_git_push
+chmod +x ss_git_push
 
 # Copy to a directory in your PATH
 sudo cp ss_git_push /usr/local/bin/
 
 # Or add an alias to your shell configuration
 echo 'alias ss_git_push="/path/to/ss_git_push"' >> ~/.bashrc
+```
+
+## 📁 Project Structure
+
+```
+.
+├── include/
+│   └── ss_git_push.hpp              # Header file with function declarations
+├── src/
+│   ├── build_commit_message.cpp     # Generates commit messages
+│   ├── extract_commits_from_file.cpp # Extracts SS_COMMIT comments
+│   ├── get_staged_files.cpp         # Gets list of staged files
+│   ├── main.cpp                     # Main programme logic
+│   └── remove_commit_lines.cpp      # Removes SS_COMMIT lines (with -rm)
+├── Makefile                          # Build configuration
+├── README.md                         # Documentation (English)
+└── README.pt_ao.md                   # Documentation (Portuguese)
 ```
 
 ## 📖 Usage
@@ -229,6 +270,7 @@ int x = 42;
 - **System calls used**: `system()`, `popen()`, `pclose()`, `mkstemp()`, `remove()`
 - **Temporary File Management**: Creates temporary file in `/tmp/` for commit message
 - **Text Processing**: Automatically removes null characters and unnecessary whitespace
+- **Compilation Flags**: `-Wall -Wextra -Werror -std=c++98`
 
 ## 📄 Licence
 
