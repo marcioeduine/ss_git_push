@@ -25,18 +25,59 @@ O `ss_git_push` é um utilitário de linha de comandos que automatiza o processo
 
 ### Pré-requisitos
 - Git instalado e configurado
+- Compilador C++ com suporte para C++98 (g++, clang++)
+- Make
+
+### Compilar a partir do Código Fonte
+
+```bash
+# Clona o repositório
+git clone <url-do-repositório>
+cd ss_git_push
+
+# Compila o projecto
+make
+
+# O binário será criado no directório actual
+```
+
+### Targets do Makefile
+
+```bash
+make        # Compila o projecto
+make clean  # Remove ficheiros objecto
+make fclean # Remove ficheiros objecto e binário
+make re     # Recompila o projecto do zero
+```
 
 ### Opcional: Adicionar ao PATH
 
 ```bash
 # Podes precisar de conceder permissões ao binário
-chmod +x /caminho/para/ss_git_push
+chmod +x ss_git_push
 
 # Copia para um directório no teu PATH
 sudo cp ss_git_push /usr/local/bin/
 
 # Ou adiciona um alias à configuração da tua shell
 echo 'alias ss_git_push="/caminho/para/ss_git_push"' >> ~/.bashrc
+```
+
+## 📁 Estrutura do Projecto
+
+```
+.
+├── include/
+│   └── ss_git_push.hpp              # Ficheiro de cabeçalho com declarações
+├── src/
+│   ├── build_commit_message.cpp     # Gera mensagens de commit
+│   ├── extract_commits_from_file.cpp # Extrai comentários SS_COMMIT
+│   ├── get_staged_files.cpp         # Obtém lista de ficheiros preparados
+│   ├── main.cpp                     # Lógica principal do programa
+│   └── remove_commit_lines.cpp      # Remove linhas SS_COMMIT (com -rm)
+├── Makefile                          # Configuração de compilação
+├── README.md                         # Documentação (Inglês)
+└── README.pt_ao.md                   # Documentação (Português)
 ```
 
 ## 📖 Utilização
@@ -229,6 +270,7 @@ int x = 42;
 - **Chamadas de sistema utilizadas**: `system()`, `popen()`, `pclose()`, `mkstemp()`, `remove()`
 - **Gestão de Ficheiros Temporários**: Cria ficheiro temporário em `/tmp/` para a mensagem de commit
 - **Processamento de Texto**: Remove automaticamente caracteres nulos e espaços em branco desnecessários
+- **Flags de Compilação**: `-Wall -Wextra -Werror -std=c++98`
 
 ## 📄 Licença
 
