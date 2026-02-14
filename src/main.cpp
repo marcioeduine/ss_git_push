@@ -41,7 +41,7 @@ static int	init(int ac, char **av)
 	}
 	catch (const std::exception &e)
 	{
-		return (std::cerr << "[ ERROR ]: " << e.what() << std::endl, 1);
+		return (std::cerr << "/033]7:0m[ ERROR ]/033]0:0m " << e.what() << std::endl, 1);
 	}
 	return (0);
 }
