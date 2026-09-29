@@ -1,3 +1,16 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                        ::::::::   ::::::::   #
+#    Makefile                                          :+:    :+: :+:    :+:   #
+#                                                     +:+        +:+           #
+#    By: Ser Superior <marcioeduine@gmail.com>       +#++:++#++ +#++:++#++     #
+#                                                          +#+        +#+      #
+#    Created: 2026/09/29 11:23:06 by Ser Superior  #+#    #+# #+#    #+#       #
+#    Updated: 2026/09/29 11:23:16 by Ser Superior  ########   ########         #
+#                                                                              #
+# **************************************************************************** #
+#// SS_COMMIT: update: SSHeader added!
+
 NAME		= ss_git_push
 CXX			= c++
 CXXFLAGS	= -Wall -Wextra -Werror -std=c++98

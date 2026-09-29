@@ -12,9 +12,9 @@
 #ifndef SS_GIT_PUSH_HPP
 # define SS_GIT_PUSH_HPP
 
-# define ERROR_MANY_ARGS "Too many arguments.\n[ USAGE ]: ./ss_git_push [-rm] [-n|--no-push] [-d|--dry-run]"
-# define ERROR_INVALID_ARG "Invalid argument.\n[ USAGE ]: ./ss_git_push [-rm] [-n|--no-push] [-d|--dry-run]"
-# define ERROR_RM_DRY_RUN "Options -rm and --dry-run cannot be combined."
+# define ERROR_MANY_ARGS "Too many arguments.\n[ USAGE ]: ./ss_git_push [-rm] [-n|--no-push] [-p|--preview]"
+# define ERROR_INVALID_ARG "Invalid argument.\n[ USAGE ]: ./ss_git_push [-rm] [-n|--no-push] [-p|--preview]"
+# define ERROR_RM_PREVIEW "Options -rm and --preview cannot be combined."
 # define CLEANUP_MESSAGE "chore: remove SS_COMMIT markers\n"
 
 # include <algorithm>
@@ -36,7 +36,7 @@ struct t_options
 {
 	bool	rm_flag;
 	bool	no_push;
-	bool	dry_run;
+	bool	preview;
 };
 
 t_vector		get_staged_files(void);

@@ -11,15 +11,15 @@ An intelligent Git commit automation tool written in C++98 that generates commit
 - Showing the current branch and the generated message before committing
 - Creating commits with detailed file-by-file change descriptions
 - Pushing to the remote repository (`git push`), unless skipped
-- Offering a simulation mode (`--dry-run`) that changes nothing
+- Offering a simulation mode (`--preview`) that changes nothing
 
 ## 🚀 Features
 
 - **Complete Staging**: Stages everything with `git add -A`, dotfiles and deletions included
-- **Smart Comment Detection**: Searches for `// SS_COMMIT:`, `#// SS_COMMIT:`, `{/* SS_COMMIT:` (JSX) and `/* SS_COMMIT:` (CSS/block) markers in your code
+- **Smart Comment Detection**: Searches for `// SS_COMMIT:`, `# SS_COMMIT:`, `{/* SS_COMMIT:` (JSX) and `/* SS_COMMIT:` (CSS/block) markers in your code
 - **Status-Aware Messages**: Groups files into `NEW FILES`, `UPDATED FILES` and `REMOVED FILES` sections instead of a single fixed header
 - **Branch Display**: Always prints the current branch with the generated message
-- **Simulation Mode**: `--dry-run` shows what would be committed without touching the index, history or remote
+- **Simulation Mode**: `--preview` shows what would be committed without touching the index, history or remote
 - **Optional Push**: `--no-push` commits without pushing, for later review
 - **Multiple Files Support**: Handles multiple modified files in a single commit
 - **Optional Comment Removal**: `-rm` flag removes `SS_COMMIT` comments after pushing, then commits the cleanup so the tree ends clean
@@ -127,11 +127,11 @@ Commits normally but skips both pushes. Useful when you want to review the
 commit locally first, or batch several commits before pushing. Combines with
 `-rm` (the cleanup commit is also kept local).
 
-### Usage with `--dry-run`
+### Usage with `--preview`
 
 ```bash
-./ss_git_push --dry-run
-# or: ./ss_git_push -d
+./ss_git_push --preview
+# or: ./ss_git_push -p
 ```
 
 Simulation mode. Reads the working tree without staging anything and prints
@@ -162,7 +162,7 @@ void	authenticate_user(void)
 
 **For Python/Shell scripts:**
 ```python
-#// SS_COMMIT: Fixed bug in data validation
+# SS_COMMIT: Fixed bug in data validation
 def	validate_data(input):
     # implementation
 ```
@@ -195,7 +195,7 @@ vim src/App.jsx
 # Add: {/* SS_COMMIT: Aligned header icons */}
 
 # 2. Preview with a dry run
-./ss_git_push --dry-run
+./ss_git_push --preview
 
 # 3. Commit and push
 ./ss_git_push
@@ -228,7 +228,7 @@ Empty sections are omitted.
 The tool recognises four comment formats:
 
 1. **C/C++ style**: `// SS_COMMIT: Your message here`
-2. **Script style**: `#// SS_COMMIT: Your message here`
+2. **Script style**: `# SS_COMMIT: Your message here`
 3. **JSX style**: `{/* SS_COMMIT: Your message here */}`
 4. **Block style**: `/* SS_COMMIT: Your message here */` (CSS and block comments)
 
@@ -255,7 +255,7 @@ The tool recognises four comment formats:
 
 - The tool runs `git add -A` (stages everything, including deletions and dotfiles)
 - The current branch is always printed with the generated message: review it
-  with `--dry-run` before pushing, especially on `main`
+  with `--preview` before pushing, especially on `main`
 - If no files are staged, it will output "Nothing to commit!"
 - Files without `SS_COMMIT` comments will still be listed in the commit
 - Push is executed automatically after committing, unless `--no-push` is given
@@ -268,13 +268,13 @@ The tool recognises four comment formats:
 ## 📋 Command-Line Arguments
 
 ```
-Usage: ./ss_git_push [-rm] [-n|--no-push] [-d|--dry-run]
+Usage: ./ss_git_push [-rm] [-n|--no-push] [-p|--preview]
 
 Options:
   (none)       Stage, commit and push; keep SS_COMMIT comments
   -rm          Commit, push, then remove SS_COMMIT lines and commit the cleanup
   -n, --no-push  Commit without pushing
-  -d, --dry-run  Show branch and generated message; change nothing
+  -p, --preview  Show branch and generated message; change nothing
   -h, --help   Show usage help
 ```
 
@@ -354,7 +354,7 @@ Feel free to fork, modify, and submit pull requests. Suggestions and improvement
 ## 💡 Tips
 
 - Use descriptive `SS_COMMIT` comments for better commit history
-- Preview with `--dry-run` before pushing to the remote
+- Preview with `--preview` before pushing to the remote
 - Combine with Git hooks for additional automation
 - Consider adding multiple `SS_COMMIT` comments for complex changes
 - Use `-rm` when comments are only temporary and shouldn't remain in the code
@@ -365,9 +365,9 @@ Feel free to fork, modify, and submit pull requests. Suggestions and improvement
 The programme handles the following errors:
 
 - **Too many arguments**: Accepts only documented flag combinations
-- **Invalid argument**: Only `-rm`, `-n`/`--no-push`, `-d`/`--dry-run`, `-h`/`--help` are accepted
-- **Conflicting flags**: `-rm` and `--dry-run` cannot be combined
-- **Nothing to commit**: Warns if no files are staged (or none changed, in dry-run)
+- **Invalid argument**: Only `-rm`, `-n`/`--no-push`, `-p`/`--preview`, `-h`/`--help` are accepted
+- **Conflicting flags**: `-rm` and `--preview` cannot be combined
+- **Nothing to commit**: Warns if no files are staged (or none changed, in preview)
 - **Staging/commit/push faults**: Aborts with a clear error; markers are kept
 - **Error creating temporary file**: Checks if it can create the message file
 - **Error opening temporary file**: Checks if it can write the message

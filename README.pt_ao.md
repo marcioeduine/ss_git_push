@@ -11,15 +11,15 @@ O `ss_git_push` é um utilitário de linha de comandos que automatiza o processo
 - Apresentação do ramo actual e da mensagem gerada antes do commit
 - Criação de commits com descrições detalhadas ficheiro a ficheiro
 - Push para o repositório remoto (`git push`), salvo indicação contrária
-- Modo de simulação (`--dry-run`) que nada altera
+- Modo de simulação (`--preview`) que nada altera
 
 ## 🚀 Funcionalidades
 
 - **Preparação Completa**: Prepara tudo com `git add -A`, incluindo dotfiles e eliminações
-- **Detecção Inteligente de Comentários**: Procura marcadores `// SS_COMMIT:`, `#// SS_COMMIT:`, `{/* SS_COMMIT:` (JSX) e `/* SS_COMMIT:` (CSS/bloco) no teu código
+- **Detecção Inteligente de Comentários**: Procura marcadores `// SS_COMMIT:`, `# SS_COMMIT:`, `{/* SS_COMMIT:` (JSX) e `/* SS_COMMIT:` (CSS/bloco) no teu código
 - **Mensagens por Estado**: Agrupa os ficheiros em secções `NEW FILES`, `UPDATED FILES` e `REMOVED FILES` em vez de um cabeçalho único e fixo
 - **Apresentação do Ramo**: Mostra sempre o ramo actual com a mensagem gerada
-- **Modo de Simulação**: `--dry-run` mostra o que seria commitado sem tocar no índice, no histórico ou no remoto
+- **Modo de Simulação**: `--preview` mostra o que seria commitado sem tocar no índice, no histórico ou no remoto
 - **Push Opcional**: `--no-push` faz commit sem push, para reveres depois
 - **Suporte para Múltiplos Ficheiros**: Processa múltiplos ficheiros modificados num único commit
 - **Remoção Opcional de Comentários**: Flag `-rm` remove os comentários `SS_COMMIT` após o push e commita a limpeza, de modo que a árvore termina limpa
@@ -127,11 +127,11 @@ Faz commit normalmente mas salta ambos os pushes. Útil quando queres rever o
 commit em local primeiro, ou agrupar vários commits antes do push. Combina com
 `-rm` (o commit de limpeza também fica em local).
 
-### Utilização com `--dry-run`
+### Utilização com `--preview`
 
 ```bash
-./ss_git_push --dry-run
-# ou: ./ss_git_push -d
+./ss_git_push --preview
+# ou: ./ss_git_push -p
 ```
 
 Modo de simulação. Lê a árvore de trabalho sem preparar nada e apresenta o
@@ -162,7 +162,7 @@ void	authenticate_user(void)
 
 **Para scripts Python/Shell:**
 ```python
-#// SS_COMMIT: Corrigido bug na validação de dados
+# SS_COMMIT: Corrigido bug na validação de dados
 def	validate_data(input):
     # implementação
 ```
@@ -195,7 +195,7 @@ vim src/App.jsx
 # Adiciona: {/* SS_COMMIT: Alinhados ícones do cabeçalho */}
 
 # 2. Previsualiza com simulação
-./ss_git_push --dry-run
+./ss_git_push --preview
 
 # 3. Commit e push
 ./ss_git_push
@@ -228,7 +228,7 @@ Secções vazias são omitidas.
 A ferramenta reconhece quatro formatos de comentários:
 
 1. **Estilo C/C++**: `// SS_COMMIT: A tua mensagem aqui`
-2. **Estilo Script**: `#// SS_COMMIT: A tua mensagem aqui`
+2. **Estilo Script**: `# SS_COMMIT: A tua mensagem aqui`
 3. **Estilo JSX**: `{/* SS_COMMIT: A tua mensagem aqui */}`
 4. **Estilo Bloco**: `/* SS_COMMIT: A tua mensagem aqui */` (CSS e comentários de bloco)
 
@@ -255,7 +255,7 @@ A ferramenta reconhece quatro formatos de comentários:
 
 - A ferramenta executa `git add -A` (prepara tudo, incluindo eliminações e dotfiles)
 - O ramo actual é sempre apresentado com a mensagem gerada: revê com
-  `--dry-run` antes do push, sobretudo no `main`
+  `--preview` antes do push, sobretudo no `main`
 - Se nenhum ficheiro estiver preparado, será apresentado "Nothing to commit!"
 - Ficheiros sem comentários `SS_COMMIT` continuarão a ser listados no commit
 - O push é executado automaticamente após o commit, salvo `--no-push`
@@ -268,13 +268,13 @@ A ferramenta reconhece quatro formatos de comentários:
 ## 📋 Argumentos da Linha de Comandos
 
 ```
-Utilização: ./ss_git_push [-rm] [-n|--no-push] [-d|--dry-run]
+Utilização: ./ss_git_push [-rm] [-n|--no-push] [-p|--preview]
 
 Opções:
   (nenhuma)    Prepara, commit e push; mantém comentários SS_COMMIT
   -rm          Commit, push, depois remove linhas SS_COMMIT e commita a limpeza
   -n, --no-push  Faz commit sem push
-  -d, --dry-run  Mostra ramo e mensagem gerada; nada altera
+  -p, --preview  Mostra ramo e mensagem gerada; nada altera
   -h, --help   Mostra ajuda de utilização
 ```
 
@@ -354,7 +354,7 @@ Sente-te à vontade para fazer fork, modificar e submeter pull requests. Sugest�
 ## 💡 Dicas
 
 - Usa comentários `SS_COMMIT` descritivos para um melhor histórico de commits
-- Previsualiza com `--dry-run` antes do push para o repositório remoto
+- Previsualiza com `--preview` antes do push para o repositório remoto
 - Combina com Git hooks para automatização adicional
 - Considera adicionar múltiplos comentários `SS_COMMIT` para alterações complexas
 - Usa `-rm` quando os comentários são apenas temporários e não devem permanecer no código
@@ -365,8 +365,8 @@ Sente-te à vontade para fazer fork, modificar e submeter pull requests. Sugest�
 O programa trata os seguintes erros:
 
 - **Demasiados argumentos**: Aceita apenas combinações documentadas de flags
-- **Argumento inválido**: Apenas `-rm`, `-n`/`--no-push`, `-d`/`--dry-run`, `-h`/`--help` são aceites
-- **Flags em conflito**: `-rm` e `--dry-run` não podem ser combinados
+- **Argumento inválido**: Apenas `-rm`, `-n`/`--no-push`, `-p`/`--preview`, `-h`/`--help` são aceites
+- **Flags em conflito**: `-rm` e `--preview` não podem ser combinados
 - **Nada para commit**: Avisa se não existem ficheiros preparados (ou alterados, na simulação)
 - **Falhas de preparação/commit/push**: Aborta com erro claro; marcadores mantidos
 - **Erro ao criar ficheiro temporário**: Verifica se consegue criar o ficheiro de mensagem

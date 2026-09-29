@@ -39,7 +39,7 @@ static void	commit_message(const t_text &body, const t_text &branch)
 
 // Simulation mode: shows what would be committed without touching
 // the index, the history or the remote.
-static void	dry_run(const t_vector &markers)
+static void	preview(const t_vector &markers)
 {
 	t_status_list	entries(get_working_entries());
 
@@ -57,8 +57,8 @@ static void	ss_git_push(const t_vector &markers, const t_options &opts)
 	t_text			message;
 	t_text			branch;
 
-	if (opts.dry_run)
-		return (dry_run(markers));
+	if (opts.preview)
+		return (preview(markers));
 	run_command("git add -A", "Staging changes");
 	files = get_staged_files();
 	if (files.empty())
@@ -94,12 +94,12 @@ static void	ss_git_push(const t_vector &markers, const t_options &opts)
 
 static void	print_usage(void)
 {
-	std::cout << "Usage: ./ss_git_push [-rm] [-n|--no-push] [-d|--dry-run]\n"
+	std::cout << "Usage: ./ss_git_push [-rm] [-n|--no-push] [-p|--preview]\n"
 		<< "\nOptions:\n"
 		<< "  (none)         Stage, commit and push; keep SS_COMMIT comments\n"
 		<< "  -rm            After pushing, remove SS_COMMIT lines and commit the cleanup\n"
 		<< "  -n, --no-push  Commit without pushing\n"
-		<< "  -d, --dry-run  Show branch and generated message; change nothing\n"
+		<< "  -p, --preview  Show branch and generated message; change nothing\n"
 		<< "  -h, --help     Show this help\n";
 }
 
@@ -109,7 +109,7 @@ static void	parse_options(int ac, char **av, t_options &opts)
 
 	opts.rm_flag = false;
 	opts.no_push = false;
-	opts.dry_run = false;
+	opts.preview = false;
 	while (++i < ac)
 	{
 		t_text	arg(av[i]);
@@ -118,8 +118,8 @@ static void	parse_options(int ac, char **av, t_options &opts)
 			opts.rm_flag = true;
 		else if (arg == "-n" or arg == "--no-push")
 			opts.no_push = true;
-		else if (arg == "-d" or arg == "--dry-run")
-			opts.dry_run = true;
+		else if (arg == "-p" or arg == "--preview")
+			opts.preview = true;
 		else if (arg == "-h" or arg == "--help")
 		{
 			print_usage();
@@ -128,8 +128,8 @@ static void	parse_options(int ac, char **av, t_options &opts)
 		else
 			throw (std::invalid_argument(ERROR_INVALID_ARG));
 	}
-	if (opts.rm_flag and opts.dry_run)
-		throw (std::invalid_argument(ERROR_RM_DRY_RUN));
+	if (opts.rm_flag and opts.preview)
+		throw (std::invalid_argument(ERROR_RM_PREVIEW));
 }
 
 static int	init(int ac, char **av)
@@ -140,10 +140,10 @@ static int	init(int ac, char **av)
 	try
 	{
 		parse_options(ac, av, opts);
-		markers.push_back("
-		markers.push_back("#
-		markers.push_back("
-		markers.push_back("
+		markers.push_back("// SS_" "COMMIT: ");
+		markers.push_back("# SS_" "COMMIT: ");
+		markers.push_back("{/* SS_" "COMMIT: ");
+		markers.push_back("/* SS_" "COMMIT: ");
 		ss_git_push(markers, opts);
 	}
 	catch (const std::exception &e)
