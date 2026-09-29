@@ -8,6 +8,38 @@ static void	remove_null_chars(t_text &line)
 		(line.erase(position, 1), position = line.find('\0'));
 }
 
+// Strips block-comment closers left behind by JSX ({/* ... */}) and CSS
+// (/* ... */) markers, so the message keeps only the prose. Repeats until
+// no trailing "*/" or "}" remains.
+static void	trim_trailing_closers(t_text &commit)
+{
+	size_t	end;
+	bool	trimmed(true);
+
+	while (trimmed)
+	{
+		trimmed = false;
+		end = commit.find_last_not_of(" \t");
+		if (end == t_text::npos)
+		{
+			commit.clear();
+			return ;
+		}
+		commit = commit.substr(0, end + 1);
+		if (commit.size() >= 2
+			and commit.substr(commit.size() - 2) == "*/")
+		{
+			commit = commit.substr(0, commit.size() - 2);
+			trimmed = true;
+		}
+		else if (not commit.empty() and commit[commit.size() - 1] == '}')
+		{
+			commit = commit.substr(0, commit.size() - 1);
+			trimmed = true;
+		}
+	}
+}
+
 static bool	find_any_marker(const t_text &line, const t_vector &markers,
 	size_t &position, size_t &marker_length)
 {
@@ -36,6 +68,10 @@ static bool	extract_commit_from_line(const t_text &line,
 		commit = commit.substr(position);
 	else
 		commit.clear();
+	position = commit.find("*/");
+	if (position xor t_text::npos)
+		commit = commit.substr(0, position);
+	trim_trailing_closers(commit);
 	return (not commit.empty());
 }
 

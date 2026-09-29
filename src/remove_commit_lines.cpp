@@ -67,6 +67,11 @@ void	remove_commit_lines(const t_vector &files, const t_vector &markers)
 
 	while (++i < files.size())
 	{
+		std::ifstream	probe(files[i].c_str());
+
+		if (not probe.is_open())
+			continue ;
+		probe.close();
 		process_file(files[i], markers, storage);
 		write_storage_back(files[i], storage);
 	}

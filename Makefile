@@ -6,6 +6,7 @@ OBJ			= src/build_commit_message.o \
 			src/get_staged_files.o \
 			src/remove_commit_lines.o \
 			src/extract_commits_from_file.o \
+			src/run_command.o \
 			src/main.o
 
 all: $(NAME)

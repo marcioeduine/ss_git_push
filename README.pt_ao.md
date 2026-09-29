@@ -5,20 +5,25 @@ Uma ferramenta inteligente de automatização de commits Git escrita em C++98 qu
 ## 📋 Descrição
 
 O `ss_git_push` é um utilitário de linha de comandos que automatiza o processo de commit no Git através de:
-- Preparação automática de todas as alterações (`git add *`)
+- Preparação automática de todas as alterações (`git add -A`, incluindo ficheiros novos, modificações e eliminações)
 - Análise de ficheiros modificados à procura de comentários especiais `SS_COMMIT`
-- Geração de mensagens de commit estruturadas baseadas nesses comentários
+- Geração de mensagens de commit por estado (ficheiros novos, actualizados e removidos)
+- Apresentação do ramo actual e da mensagem gerada antes do commit
 - Criação de commits com descrições detalhadas ficheiro a ficheiro
-- Push automático para o repositório remoto (`git push`)
+- Push para o repositório remoto (`git push`), salvo indicação contrária
+- Modo de simulação (`--dry-run`) que nada altera
 
 ## 🚀 Funcionalidades
 
-- **Preparação Automática**: Prepara todas as alterações no repositório
-- **Detecção Inteligente de Comentários**: Procura marcadores `// SS_COMMIT:` ou `#// SS_COMMIT:` no teu código
-- **Mensagens de Commit Estruturadas**: Gera mensagens de commit organizadas com nomes de ficheiros e descrições de alterações
+- **Preparação Completa**: Prepara tudo com `git add -A`, incluindo dotfiles e eliminações
+- **Detecção Inteligente de Comentários**: Procura marcadores `// SS_COMMIT:`, `#// SS_COMMIT:`, `{/* SS_COMMIT:` (JSX) e `/* SS_COMMIT:` (CSS/bloco) no teu código
+- **Mensagens por Estado**: Agrupa os ficheiros em secções `NEW FILES`, `UPDATED FILES` e `REMOVED FILES` em vez de um cabeçalho único e fixo
+- **Apresentação do Ramo**: Mostra sempre o ramo actual com a mensagem gerada
+- **Modo de Simulação**: `--dry-run` mostra o que seria commitado sem tocar no índice, no histórico ou no remoto
+- **Push Opcional**: `--no-push` faz commit sem push, para reveres depois
 - **Suporte para Múltiplos Ficheiros**: Processa múltiplos ficheiros modificados num único commit
-- **Remoção Opcional de Comentários**: Flag `-rm` para remover os comentários `SS_COMMIT` após o commit
-- **Push Automático**: Envia automaticamente as alterações para o repositório remoto
+- **Remoção Opcional de Comentários**: Flag `-rm` remove os comentários `SS_COMMIT` após o push e commita a limpeza, de modo que a árvore termina limpa
+- **Execução Verificada**: Falhas de preparação, commit ou push abortam a execução com erro claro; um push falhado nunca dispara a remoção de marcadores
 - **Compatível com C++98**: Escrito em C++98 padrão para máxima compatibilidade
 
 ## 📧 Instalação
@@ -70,11 +75,12 @@ echo 'alias ss_git_push="/caminho/para/ss_git_push"' >> ~/.bashrc
 ├── include/
 │   └── ss_git_push.hpp              # Ficheiro de cabeçalho com declarações
 ├── src/
-│   ├── build_commit_message.cpp     # Gera mensagens de commit
+│   ├── build_commit_message.cpp     # Gera mensagens de commit por estado
 │   ├── extract_commits_from_file.cpp # Extrai comentários SS_COMMIT
-│   ├── get_staged_files.cpp         # Obtém lista de ficheiros preparados
-│   ├── main.cpp                     # Lógica principal do programa
-│   └── remove_commit_lines.cpp      # Remove linhas SS_COMMIT (com -rm)
+│   ├── get_staged_files.cpp         # Obtém ficheiros, estados e ramo actual
+│   ├── main.cpp                     # Lógica principal e leitura de opções
+│   ├── remove_commit_lines.cpp      # Remove linhas SS_COMMIT (com -rm)
+│   └── run_command.cpp              # Execução verificada de comandos
 ├── Makefile                          # Configuração de compilação
 ├── README.md                         # Documentação (Inglês)
 └── README.pt_ao.md                   # Documentação (Português)
@@ -89,10 +95,10 @@ echo 'alias ss_git_push="/caminho/para/ss_git_push"' >> ~/.bashrc
 ```
 
 Este comando irá:
-1. Executar `git add *` (preparar todas as alterações)
-2. Obter a lista de ficheiros preparados
+1. Executar `git add -A` (prepara tudo, incluindo eliminações e dotfiles)
+2. Obter a lista de ficheiros preparados com o seu estado (novo / actualizado / removido)
 3. Analisar cada ficheiro à procura de comentários `SS_COMMIT`
-4. Gerar uma mensagem de commit estruturada
+4. Apresentar o ramo actual e a mensagem gerada
 5. Criar o commit com a mensagem gerada
 6. Executar `git push` para enviar as alterações
 
@@ -104,9 +110,42 @@ Este comando irá:
 
 Com a flag `-rm`, o programa irá:
 1. Executar todo o processo normal de commit e push
-2. **Remover todas as linhas** que contêm os marcadores `SS_COMMIT` dos ficheiros
+2. **Remover todas as linhas** que contêm os marcadores `SS_COMMIT` dos ficheiros commitados
 3. Se uma linha contiver apenas espaços/tabs seguidos do marcador, a linha inteira é removida
 4. Se uma linha contiver código antes do marcador, apenas o marcador e o texto após ele são removidos
+5. Preparar a limpeza e criar um segundo commit (`chore: remove SS_COMMIT markers`)
+6. Fazer push da limpeza, de modo que a árvore termina limpa
+
+### Utilização com `--no-push`
+
+```bash
+./ss_git_push --no-push
+# ou: ./ss_git_push -n
+```
+
+Faz commit normalmente mas salta ambos os pushes. Útil quando queres rever o
+commit em local primeiro, ou agrupar vários commits antes do push. Combina com
+`-rm` (o commit de limpeza também fica em local).
+
+### Utilização com `--dry-run`
+
+```bash
+./ss_git_push --dry-run
+# ou: ./ss_git_push -d
+```
+
+Modo de simulação. Lê a árvore de trabalho sem preparar nada e apresenta o
+ramo mais a mensagem que seria gerada. Nada é preparado, commitado ou
+empurrado. Não pode ser combinado com `-rm`.
+
+### Utilização com `--help`
+
+```bash
+./ss_git_push --help
+# ou: ./ss_git_push -h
+```
+
+Apresenta o resumo de utilização.
 
 ### Adicionar Comentários SS_COMMIT
 
@@ -128,6 +167,18 @@ def	validate_data(input):
     # implementação
 ```
 
+**Para componentes JSX/React (válido dentro do markup):**
+```jsx
+{/* SS_COMMIT: Alinhados ícones do cabeçalho */}
+<button>Play</button>
+```
+
+**Para CSS/folhas de estilo:**
+```css
+/* SS_COMMIT: Centrado rodapé da vitrina */
+.footer { display: flex; }
+```
+
 **Código na mesma linha (será preservado sem o marcador com `-rm`):**
 ```cpp
 int x = 42;  // SS_COMMIT: Inicializada variável x
@@ -140,46 +191,57 @@ int x = 42;  // SS_COMMIT: Inicializada variável x
 vim src/main.cpp
 # Adiciona: // SS_COMMIT: Implementada nova funcionalidade X
 
-vim src/utils.cpp
-# Adiciona: // SS_COMMIT: Refactoradas funções auxiliares
+vim src/App.jsx
+# Adiciona: {/* SS_COMMIT: Alinhados ícones do cabeçalho */}
 
-# 2. Executa ss_git_push
+# 2. Previsualiza com simulação
+./ss_git_push --dry-run
+
+# 3. Commit e push
 ./ss_git_push
 
-# 3. Ou executa com -rm para limpar os comentários após o commit
+# 4. Ou executa com -rm para limpar os comentários após o commit
 ./ss_git_push -rm
 ```
 
 ### Exemplo de Mensagem de Commit Gerada
 
 ```
-UPDATED FILE:
+NEW FILES:
+ - src/App.jsx:
+   • Aligned header icons
 
+UPDATED FILES:
  - src/main.cpp:
    • Implementada nova funcionalidade X
    • Corrigido memory leak na inicialização
 
- - src/utils.cpp:
-   • Refactoradas funções auxiliares
-
- - src/config.h
+REMOVED FILES:
+ - src/legacy.cpp
 ```
 
 Nota: Ficheiros sem comentários `SS_COMMIT` aparecem listados sem marcadores de tópico.
+Secções vazias são omitidas.
 
 ## 📝 Sintaxe dos Comentários
 
-A ferramenta reconhece dois formatos de comentários:
+A ferramenta reconhece quatro formatos de comentários:
 
 1. **Estilo C/C++**: `// SS_COMMIT: A tua mensagem aqui`
 2. **Estilo Script**: `#// SS_COMMIT: A tua mensagem aqui`
+3. **Estilo JSX**: `{/* SS_COMMIT: A tua mensagem aqui */}`
+4. **Estilo Bloco**: `/* SS_COMMIT: A tua mensagem aqui */` (CSS e comentários de bloco)
 
 **Regras:**
-- Os comentários devem começar com `// SS_COMMIT:` ou `#// SS_COMMIT:`
+- A mensagem termina no primeiro `*/` da linha, de modo que os fechos nunca
+  contaminam o texto do commit
+- Fechos `*/` e `}` no fim são removidos automaticamente
 - O texto após os dois pontos será usado como descrição da alteração
 - Espaços em branco à esquerda são automaticamente removidos
 - Múltiplos comentários no mesmo ficheiro serão todos incluídos
 - Caracteres nulos (`\0`) são automaticamente removidos das mensagens
+- Dentro do markup JSX, usa a forma `{/* ... */}`: um marcador `//` aí é erro
+  de sintaxe em React
 
 ## 🎯 Casos de Uso
 
@@ -191,22 +253,29 @@ A ferramenta reconhece dois formatos de comentários:
 
 ## ⚠️ Notas Importantes
 
-- A ferramenta executa automaticamente `git add *` (prepara todas as alterações)
+- A ferramenta executa `git add -A` (prepara tudo, incluindo eliminações e dotfiles)
+- O ramo actual é sempre apresentado com a mensagem gerada: revê com
+  `--dry-run` antes do push, sobretudo no `main`
 - Se nenhum ficheiro estiver preparado, será apresentado "Nothing to commit!"
 - Ficheiros sem comentários `SS_COMMIT` continuarão a ser listados no commit
-- As mensagens de commit são geradas automaticamente
-- O push é executado automaticamente após o commit
-- Com `-rm`, os comentários são removidos dos ficheiros **após** o commit ser criado
-- A flag `-rm` preserva código que aparece antes dos marcadores `SS_COMMIT`
+- O push é executado automaticamente após o commit, salvo `--no-push`
+- Com `-rm`, a limpeza dos marcadores é commitada (`chore: remove SS_COMMIT markers`)
+  e empurrada, de modo que a árvore termina limpa
+- Se a preparação, o commit ou o push falharem, a execução aborta com erro e os
+  marcadores são mantidos: um push falhado nunca dispara a remoção
+- Caminhos com espaços ou citação especial não são suportados
 
 ## 📋 Argumentos da Linha de Comandos
 
 ```
-Utilização: ./ss_git_push [-rm]
+Utilização: ./ss_git_push [-rm] [-n|--no-push] [-d|--dry-run]
 
 Opções:
-  (nenhuma)    Executa commit e push normalmente, mantém comentários SS_COMMIT
-  -rm          Executa commit e push, depois remove todas as linhas com SS_COMMIT
+  (nenhuma)    Prepara, commit e push; mantém comentários SS_COMMIT
+  -rm          Commit, push, depois remove linhas SS_COMMIT e commita a limpeza
+  -n, --no-push  Faz commit sem push
+  -d, --dry-run  Mostra ramo e mensagem gerada; nada altera
+  -h, --help   Mostra ajuda de utilização
 ```
 
 ## 🔍 Exemplo Completo
@@ -237,8 +306,7 @@ $ ./ss_git_push -rm
 
 **Commit gerado:**
 ```
-UPDATED FILE:
-
+UPDATED FILES:
  - main.cpp:
    • Adicionada função hello world
    • Actualizado main para usar nova função hello
@@ -268,6 +336,7 @@ int x = 42;
 - **Dependências**: Biblioteca padrão C++, chamadas de sistema POSIX
 - **Compatibilidade**: Linux, macOS, sistemas Unix-like
 - **Chamadas de sistema utilizadas**: `system()`, `popen()`, `pclose()`, `mkstemp()`, `remove()`
+- **Comandos Git utilizados**: `git add -A`, `git diff --name-only --cached`, `git status --porcelain`, `git rev-parse --abbrev-ref HEAD`
 - **Gestão de Ficheiros Temporários**: Cria ficheiro temporário em `/tmp/` para a mensagem de commit
 - **Processamento de Texto**: Remove automaticamente caracteres nulos e espaços em branco desnecessários
 - **Flags de Compilação**: `-Wall -Wextra -Werror -std=c++98`
@@ -285,7 +354,7 @@ Sente-te à vontade para fazer fork, modificar e submeter pull requests. Sugest�
 ## 💡 Dicas
 
 - Usa comentários `SS_COMMIT` descritivos para um melhor histórico de commits
-- Revê os commits gerados antes de fazer push para o repositório remoto
+- Previsualiza com `--dry-run` antes do push para o repositório remoto
 - Combina com Git hooks para automatização adicional
 - Considera adicionar múltiplos comentários `SS_COMMIT` para alterações complexas
 - Usa `-rm` quando os comentários são apenas temporários e não devem permanecer no código
@@ -295,9 +364,11 @@ Sente-te à vontade para fazer fork, modificar e submeter pull requests. Sugest�
 
 O programa trata os seguintes erros:
 
-- **Demasiados argumentos**: Aceita apenas 0 ou 1 argumento
-- **Argumento inválido**: Apenas `-rm` é aceite como argumento
-- **Nada para commit**: Avisa se não existem ficheiros preparados
+- **Demasiados argumentos**: Aceita apenas combinações documentadas de flags
+- **Argumento inválido**: Apenas `-rm`, `-n`/`--no-push`, `-d`/`--dry-run`, `-h`/`--help` são aceites
+- **Flags em conflito**: `-rm` e `--dry-run` não podem ser combinados
+- **Nada para commit**: Avisa se não existem ficheiros preparados (ou alterados, na simulação)
+- **Falhas de preparação/commit/push**: Aborta com erro claro; marcadores mantidos
 - **Erro ao criar ficheiro temporário**: Verifica se consegue criar o ficheiro de mensagem
 - **Erro ao abrir ficheiro temporário**: Verifica se consegue escrever a mensagem
 
