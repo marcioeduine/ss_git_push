@@ -61,4 +61,3 @@ t_text	build_commit_message(const t_status_list &entries,
 		(message.erase(lead, 1), lead = message.find('\0'));
 	return (message);
 }
-// SS_COMMIT: update: SSHeader added!

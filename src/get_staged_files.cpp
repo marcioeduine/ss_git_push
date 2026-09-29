@@ -127,4 +127,3 @@ t_text	get_current_branch(void)
 		return ("unknown");
 	return (branch);
 }
-// SS_COMMIT: update: SSHeader added!

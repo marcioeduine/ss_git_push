@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 #include "../include/ss_git_push.hpp"
 
-// SS_COMMIT: update: SSHeader added!
 // Writes text to a fresh temporary file and returns its path.
 static t_text	write_temp_message(const t_text &body)
 {
@@ -141,10 +140,10 @@ static int	init(int ac, char **av)
 	try
 	{
 		parse_options(ac, av, opts);
-		markers.push_back("// SS_COMMIT:");
-		markers.push_back("#// SS_COMMIT:");
-		markers.push_back("{/* SS_COMMIT:");
-		markers.push_back("/* SS_COMMIT:");
+		markers.push_back("
+		markers.push_back("#
+		markers.push_back("
+		markers.push_back("
 		ss_git_push(markers, opts);
 	}
 	catch (const std::exception &e)

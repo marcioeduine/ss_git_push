@@ -80,7 +80,6 @@ static bool	extract_commit_from_line(const t_text &line,
 	return (trim_trailing_closers(commit), not commit.empty());
 }
 
-// SS_COMMIT: refactor(parser): move temporary line variables into for loop scope.
 void	extract_commits_from_file(const t_text &filename,
 	const t_vector &markers, t_vector &storage)
 {
@@ -96,4 +95,3 @@ void	extract_commits_from_file(const t_text &filename,
 	}
 	file.close();
 }
-// SS_COMMIT: update: SSHeader added!

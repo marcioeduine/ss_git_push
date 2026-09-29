@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 #include "../include/ss_git_push.hpp"
 
-// SS_COMMIT: update: SSHeader added!
 static bool	is_comment_marker(const t_text &line, const t_vector &markers,
 	size_t &marker_pos)
 {

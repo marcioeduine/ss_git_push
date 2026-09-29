@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 #include "../include/ss_git_push.hpp"
 
-// SS_COMMIT: update: SSHeader added!
 // Runs a shell command and throws when it reports failure, so staging,
 // commit and push faults abort the run instead of passing silently.
 int	run_command(const t_text &cmd, const t_text &action)
