@@ -1,5 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       ::::::::   ::::::::  */
+/*    main.cpp                                         :+:    :+: :+:    :+:  */
+/*                                                    +:+        +:+          */
+/*    By: Ser Superior <marcioeduine@gmail.com>      +#++:++#++ +#++:++#++    */
+/*                                                         +#+        +#+     */
+/*    Created: 2026/09/29 10:49:10 by Ser Superior #+#    #+# #+#    #+#      */
+/*    Updated: 2026/09/29 10:49:14 by Ser Superior ########   ########        */
+/*                                                                            */
+/* ************************************************************************** */
 #include "../include/ss_git_push.hpp"
 
+// SS_COMMIT: update: SSHeader added!
 // Writes text to a fresh temporary file and returns its path.
 static t_text	write_temp_message(const t_text &body)
 {
@@ -13,8 +25,7 @@ static t_text	write_temp_message(const t_text &body)
 	os.open(tmp);
 	if (not os.is_open())
 		throw ((remove(tmp), std::runtime_error("Opening tmp file!")));
-	(os << body, os.close());
-	return (tmp);
+	return (os << body, os.close(), tmp);
 }
 
 // Prints the generated message with its branch, then commits it.
@@ -55,9 +66,7 @@ static void	ss_git_push(const t_vector &markers, const t_options &opts)
 		throw (std::runtime_error("Nothing to commit!"));
 	branch = get_current_branch();
 	{
-		size_t	i(-1);
-
-		while (++i < files.size())
+		for (size_t	i(0); i < files.size(); ++i)
 			entries.push_back(std::make_pair(staged_file_status(files[i]),
 				files[i]));
 	}

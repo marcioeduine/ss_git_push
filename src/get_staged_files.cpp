@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       ::::::::   ::::::::  */
+/*    get_staged_files.cpp                             :+:    :+: :+:    :+:  */
+/*                                                    +:+        +:+          */
+/*    By: Ser Superior <marcioeduine@gmail.com>      +#++:++#++ +#++:++#++    */
+/*                                                         +#+        +#+     */
+/*    Created: 2026/09/29 10:48:24 by Ser Superior #+#    #+# #+#    #+#      */
+/*    Updated: 2026/09/29 10:48:26 by Ser Superior ########   ########        */
+/*                                                                            */
+/* ************************************************************************** */
 #include "../include/ss_git_push.hpp"
 
 // Lists files already present in the Git index (staged changes only).
@@ -116,3 +127,4 @@ t_text	get_current_branch(void)
 		return ("unknown");
 	return (branch);
 }
+// SS_COMMIT: update: SSHeader added!

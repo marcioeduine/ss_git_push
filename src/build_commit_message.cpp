@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       ::::::::   ::::::::  */
+/*    build_commit_message.cpp                         :+:    :+: :+:    :+:  */
+/*                                                    +:+        +:+          */
+/*    By: Ser Superior <marcioeduine@gmail.com>      +#++:++#++ +#++:++#++    */
+/*                                                         +#+        +#+     */
+/*    Created: 2026/09/29 10:47:00 by Ser Superior #+#    #+# #+#    #+#      */
+/*    Updated: 2026/09/29 10:47:16 by Ser Superior ########   ########        */
+/*                                                                            */
+/* ************************************************************************** */
 #include "../include/ss_git_push.hpp"
 
 // Appends one message section (NEW / UPDATED / REMOVED FILES) for entries
@@ -50,3 +61,4 @@ t_text	build_commit_message(const t_status_list &entries,
 		(message.erase(lead, 1), lead = message.find('\0'));
 	return (message);
 }
+// SS_COMMIT: update: SSHeader added!

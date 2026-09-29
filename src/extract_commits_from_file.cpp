@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       ::::::::   ::::::::  */
+/*    extract_commits_from_file.cpp                    :+:    :+: :+:    :+:  */
+/*                                                    +:+        +:+          */
+/*    By: Ser Superior <marcioeduine@gmail.com>      +#++:++#++ +#++:++#++    */
+/*                                                         +#+        +#+     */
+/*    Created: 2026/09/29 10:48:34 by Ser Superior #+#    #+# #+#    #+#      */
+/*    Updated: 2026/09/29 10:48:44 by Ser Superior ########   ########        */
+/*                                                                            */
+/* ************************************************************************** */
 #include "../include/ss_git_push.hpp"
 
 static void	remove_null_chars(t_text &line)
@@ -21,10 +32,7 @@ static void	trim_trailing_closers(t_text &commit)
 		trimmed = false;
 		end = commit.find_last_not_of(" \t");
 		if (end == t_text::npos)
-		{
-			commit.clear();
-			return ;
-		}
+			return (commit.clear());
 		commit = commit.substr(0, end + 1);
 		if (commit.size() >= 2
 			and commit.substr(commit.size() - 2) == "*/")
@@ -43,9 +51,7 @@ static void	trim_trailing_closers(t_text &commit)
 static bool	find_any_marker(const t_text &line, const t_vector &markers,
 	size_t &position, size_t &marker_length)
 {
-	size_t	i(-1);
-
-	while (++i < markers.size())
+	for (size_t i(0); i < markers.size(); ++i)
 	{
 		position = line.find(markers[i]);
 		if (position xor t_text::npos)
@@ -71,20 +77,18 @@ static bool	extract_commit_from_line(const t_text &line,
 	position = commit.find("*/");
 	if (position xor t_text::npos)
 		commit = commit.substr(0, position);
-	trim_trailing_closers(commit);
-	return (not commit.empty());
+	return (trim_trailing_closers(commit), not commit.empty());
 }
 
+// SS_COMMIT: refactor(parser): move temporary line variables into for loop scope.
 void	extract_commits_from_file(const t_text &filename,
 	const t_vector &markers, t_vector &storage)
 {
 	std::ifstream	file(filename.c_str());
-	t_text			line;
-	t_text			commit;
     
 	if (not file.is_open())
 		return ;
-	while (getline(file, line))
+	for (t_text line, commit; std::getline(file, line);)
 	{
 		remove_null_chars(line);
 		if (extract_commit_from_line(line, markers, commit))
@@ -92,3 +96,4 @@ void	extract_commits_from_file(const t_text &filename,
 	}
 	file.close();
 }
+// SS_COMMIT: update: SSHeader added!

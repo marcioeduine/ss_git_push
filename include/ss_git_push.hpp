@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       ::::::::   ::::::::  */
+/*    ss_git_push.hpp                                  :+:    :+: :+:    :+:  */
+/*                                                    +:+        +:+          */
+/*    By: Ser Superior <marcioeduine@gmail.com>      +#++:++#++ +#++:++#++    */
+/*                                                         +#+        +#+     */
+/*    Created: 2026/09/29 10:47:58 by Ser Superior #+#    #+# #+#    #+#      */
+/*    Updated: 2026/09/29 10:48:12 by Ser Superior ########   ########        */
+/*                                                                            */
+/* ************************************************************************** */
 #ifndef SS_GIT_PUSH_HPP
 # define SS_GIT_PUSH_HPP
 
@@ -39,4 +50,5 @@ t_text			build_commit_message(const t_status_list &entries,
 void			remove_commit_lines(const t_vector &files, const t_vector &markers);
 int				run_command(const t_text &cmd, const t_text &action);
 
+// SS_COMMIT: update: SSHeader added!
 #endif

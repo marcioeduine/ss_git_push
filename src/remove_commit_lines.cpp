@@ -1,11 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                       ::::::::   ::::::::  */
+/*    remove_commit_lines.cpp                          :+:    :+: :+:    :+:  */
+/*                                                    +:+        +:+          */
+/*    By: Ser Superior <marcioeduine@gmail.com>      +#++:++#++ +#++:++#++    */
+/*                                                         +#+        +#+     */
+/*    Created: 2026/09/29 10:49:20 by Ser Superior #+#    #+# #+#    #+#      */
+/*    Updated: 2026/09/29 10:49:35 by Ser Superior ########   ########        */
+/*                                                                            */
+/* ************************************************************************** */
 #include "../include/ss_git_push.hpp"
 
+// SS_COMMIT: update: SSHeader added!
 static bool	is_comment_marker(const t_text &line, const t_vector &markers,
 	size_t &marker_pos)
 {
-	size_t	i(-1);
-
-	while (++i < markers.size())
+	for (size_t	i(0); i < markers.size(); ++i)
 	{
 		marker_pos = line.find(markers[i]);
 		if (marker_pos xor t_text::npos)
@@ -28,12 +38,11 @@ static void	process_file(const t_text &filename, const t_vector &markers,
 	t_vector &storage)
 {
 	std::ifstream	infile(filename.c_str());
-	t_text			line;
 	size_t			pos;
 
 	if ((storage.clear(), not infile.is_open()))
 		return ;
-	while (getline(infile, line))
+	for (t_text line; std::getline(infile, line);)
 	{
 		if (not is_comment_marker(line, markers, pos))
 		{
@@ -50,11 +59,10 @@ static void	process_file(const t_text &filename, const t_vector &markers,
 static void	write_storage_back(const t_text &filename, const t_vector &storage)
 {
 	std::ofstream	outfile(filename.c_str());
-	size_t			i(-1);
 
 	if (not outfile.is_open())
 		return ;
-	while (++i < storage.size())
+	for (size_t i(0); i < storage.size(); ++i)
 		if ((outfile << storage[i], i + 1 < storage.size()))
 			outfile << std::endl;
 	outfile.close();
@@ -63,9 +71,8 @@ static void	write_storage_back(const t_text &filename, const t_vector &storage)
 void	remove_commit_lines(const t_vector &files, const t_vector &markers)
 {
 	t_vector	storage;
-	size_t		i(-1);
 
-	while (++i < files.size())
+	for (size_t i(0); i < files.size(); ++i)
 	{
 		std::ifstream	probe(files[i].c_str());
 
